@@ -7,9 +7,6 @@ interface Data {
   cType: string;
 }
 
-let allData: Record<string, Data> = {};
-let pane: Pane;
-
 async function waitUntilAvailable(): Promise<boolean> {
   return new Promise(async (resolve) => {
     try {
@@ -49,6 +46,17 @@ function getParsedNumberOrUndefined(
   return undefined;
 }
 
+/*
+  Name can just be label (which can have space), but can also be:
+  - `tick rate;.10,.60,.5`  (name;min,max,steps)
+  - `tick rate;.10,.60`     (name;min,max)
+  - `speed;1,10`
+  - `sine;view`              (name;view) < read-only
+  - `sine;graph`
+  - `sine;graph,-1,1`        (name;graph,min,max)
+  - `food time;morning,evening,night`           (string and its dropdown options)
+  - `month;April:APR,February:FEB,March:MAR`    (string and its dropdown options where the labels are different from their values)
+*/
 function getParams(name: string, cType: string): BindingParams {
   switch (cType) {
     case "int":
@@ -109,19 +117,15 @@ function getParams(name: string, cType: string): BindingParams {
 async function main() {
   await waitUntilAvailable();
 
-  const sse = new EventSource("http://localhost:8080/events?stream=messages");
+  let pane = new Pane();
 
-  sse.addEventListener("open", () => {
-    allData = {};
-    pane = new Pane();
-  });
+  const sse = new EventSource("http://localhost:8080/events?stream=messages");
 
   const handleMessage = ({ data: dataStr }: { data: string }) => {
     if (dataStr === "hello") return;
 
     const data: Data = JSON.parse(dataStr);
     const params = getParams(data.name, data.cType);
-    allData[params.label!] = data;
     const binding = pane.addBinding(data, "value", params);
 
     function onChange(ev: { value: unknown }) {
