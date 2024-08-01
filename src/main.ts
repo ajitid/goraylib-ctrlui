@@ -1,27 +1,80 @@
+import { render } from "preact";
+import { html } from "htm/preact";
+import { useMemo, useState } from "preact/hooks";
+
 import "./style.css";
 
-import "./pane";
+import { forceUpdate, forceUpdateKey } from "./store";
+import { currentPane } from "./pane";
 
-// import typescriptLogo from "./typescript.svg";
-// import viteLogo from "/vite.svg";
-// import { setupCounter } from "./counter.ts";
+const App = () => {
+  const [isTableVisible, setIsTableVisible] = useState(false);
 
-// document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-//   <div>
-//     <a href="https://vitejs.dev" target="_blank">
-//       <img src="${viteLogo}" class="logo" alt="Vite logo" />
-//     </a>
-//     <a href="https://www.typescriptlang.org/" target="_blank">
-//       <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-//     </a>
-//     <h1>Vite + TypeScript</h1>
-//     <div class="card">
-//       <button id="counter" type="button"></button>
-//     </div>
-//     <p class="read-the-docs">
-//       Click on the Vite and TypeScript logos to learn more
-//     </p>
-//   </div>
-// `
+  const table = useMemo(() => {
+    const d = localStorage.getItem("tweaked-params") ?? "";
+    const p: Array<{ time: number; tweakedParams: Record<string, unknown> }> = d
+      ? JSON.parse(d)
+      : [];
+    return p.reverse();
+  }, [forceUpdateKey.value]);
 
-// setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+  const clearHistory = () => {
+    localStorage.removeItem("tweaked-params");
+    forceUpdate();
+  };
+
+  const tableContents = table
+    .map(({ time, tweakedParams }, i) => {
+      const entries = [];
+      for (let key of Object.keys(tweakedParams)) {
+        entries.push(html`
+          <tr
+            style="background-color: ${time === currentPane.time
+              ? "#2f3130"
+              : "unset"}"
+          >
+            <td>${key}</td>
+            <td>${tweakedParams[key]}</td>
+          </tr>
+        `);
+      }
+
+      if (i !== table.length - 1) {
+        entries.push(html`
+          <tr>
+            <td>---</td>
+            <td>---</td>
+          </tr>
+        `);
+      }
+
+      return entries;
+    })
+    .flat();
+
+  const tableEl = html`
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${tableContents}
+      </tbody>
+    </table>
+  `;
+
+  return html`
+    <div>
+      <button onClick=${() => setIsTableVisible((v) => !v)} class="mr-3">
+        ${isTableVisible ? "Hide History" : "Show History"}
+      </button>
+      <button onClick=${() => clearHistory()}>Clear history</button>
+      <div>${isTableVisible && tableEl}</div>
+    </div>
+  `;
+};
+
+render(html`<${App} />`, document.body);

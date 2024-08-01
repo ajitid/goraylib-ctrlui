@@ -8,9 +8,18 @@ importers:
 
   .:
     dependencies:
+      '@preact/signals':
+        specifier: ^1.3.0
+        version: 1.3.0(preact@10.23.1)
+      htm:
+        specifier: ^3.1.1
+        version: 3.1.1
       ky:
         specifier: ^1.5.0
         version: 1.5.0
+      preact:
+        specifier: ^10.23.1
+        version: 10.23.1
       tweakpane:
         specifier: ^4.0.4
         version: 4.0.4
@@ -165,6 +174,14 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@preact/signals-core@1.7.0':
+    resolution: {integrity: sha512-bEZLgmJGSBVP5PUPDowhPW3bVdMmp9Tr5OEl+SQK+8Tv9T7UsIfyN905cfkmmeqw8z4xp8T6zrl4M1uj9+HAfg==}
+
+  '@preact/signals@1.3.0':
+    resolution: {integrity: sha512-EOMeg42SlLS72dhoq6Vjq08havnLseWmPQ8A0YsgIAqMgWgx7V1a39+Pxo6i7SY5NwJtH4849JogFq3M67AzWg==}
+    peerDependencies:
+      preact: 10.x
+
   '@rollup/rollup-android-arm-eabi@4.19.1':
     resolution: {integrity: sha512-XzqSg714++M+FXhHfXpS1tDnNZNpgxxuGZWlRG/jSj+VEPmZ0yg6jV4E0AL3uyBKxO8mO3xtOsP5mQ+XLfrlww==}
     cpu: [arm]
@@ -261,6 +278,9 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
+  htm@3.1.1:
+    resolution: {integrity: sha512-983Vyg8NwUE7JkZ6NmOqpCZ+sh1bKv2iYTlUkzlWmA5JD2acKoxd4KVxbMmxX/85mtfdnDmTFoNKcg5DGAvxNQ==}
+
   ky@1.5.0:
     resolution: {integrity: sha512-bkQo+UqryW6Zmo/DsixYZE4Z9t2mzvNMhceyIhuMuInb3knm5Q+GNGMKveydJAj+Z6piN1SwI6eR/V0G+Z0BtA==}
     engines: {node: '>=18'}
@@ -276,6 +296,9 @@ packages:
   postcss@8.4.40:
     resolution: {integrity: sha512-YF2kKIUzAofPMpfH6hOi2cGnv/HrUlfucspc7pDyvv7kGdqXrfj8SCl/t8owkEgKEuu8ZcRjSOxFxVLqwChZ2Q==}
     engines: {node: ^10 || ^12 || >=14}
+
+  preact@10.23.1:
+    resolution: {integrity: sha512-O5UdRsNh4vdZaTieWe3XOgSpdMAmkIYBCT3VhQDlKrzyCm8lUYsk0fmVEvoQQifoOjFRTaHZO69ylrzTW2BH+A==}
 
   rollup@4.19.1:
     resolution: {integrity: sha512-K5vziVlg7hTpYfFBI+91zHBEMo6jafYXpkMlqZjg7/zhIG9iHqazBf4xz9AVdjS9BruRn280ROqLI7G3OFRIlw==}
@@ -393,6 +416,13 @@ snapshots:
   '@esbuild/win32-x64@0.21.5':
     optional: true
 
+  '@preact/signals-core@1.7.0': {}
+
+  '@preact/signals@1.3.0(preact@10.23.1)':
+    dependencies:
+      '@preact/signals-core': 1.7.0
+      preact: 10.23.1
+
   '@rollup/rollup-android-arm-eabi@4.19.1':
     optional: true
 
@@ -474,6 +504,8 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
+  htm@3.1.1: {}
+
   ky@1.5.0: {}
 
   nanoid@3.3.7: {}
@@ -485,6 +517,8 @@ snapshots:
       nanoid: 3.3.7
       picocolors: 1.0.1
       source-map-js: 1.2.0
+
+  preact@10.23.1: {}
 
   rollup@4.19.1:
     dependencies:

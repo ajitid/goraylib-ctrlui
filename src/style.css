@@ -23,36 +23,20 @@ a:hover {
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
+  /* display: flex;
+  place-items: center; */
+
+  margin: 0 auto;
   min-width: 320px;
+  max-width: 1280px;
   min-height: 100vh;
+
+  padding: 0.5rem;
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #3178c6aa);
 }
 
 .card {
@@ -61,6 +45,10 @@ h1 {
 
 .read-the-docs {
   color: #888;
+}
+
+.mr-3 {
+  margin-right: 0.5rem;
 }
 
 button {

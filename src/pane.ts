@@ -1,5 +1,11 @@
 import { BindingParams, Pane } from "tweakpane";
 import ky from "ky";
+import { forceUpdate } from "./store";
+import debounce from "./debounce";
+
+export const currentPane = {
+  time: Date.now(),
+};
 
 interface Data {
   name: string;
@@ -47,7 +53,7 @@ function getParsedNumberOrUndefined(
 }
 
 /*
-  Name can just be label (which can have space), but can also be:
+Name can just be label (which can have space), but can also be:
   - `tick rate;.10,.60,.5`  (name;min,max,steps)
   - `tick rate;.10,.60`     (name;min,max)
   - `speed;1,10`
@@ -119,8 +125,27 @@ async function main() {
 
   let pane = new Pane();
 
-  const sse = new EventSource("http://localhost:8080/events?stream=messages");
+  currentPane.time = Date.now();
+  let tweakedParams: Record<string, unknown> = {};
+  const sendToLocalStorage = () => {
+    const d = localStorage.getItem("tweaked-params") ?? "";
+    const p: Array<{ time: number; tweakedParams: Record<string, unknown> }> = d
+      ? JSON.parse(d)
+      : [];
 
+    if (p.length === 0 || p[p.length - 1].time !== currentPane.time) {
+      p.push({ time: currentPane.time, tweakedParams });
+    } else {
+      p[p.length - 1].tweakedParams = tweakedParams;
+    }
+    localStorage.setItem("tweaked-params", JSON.stringify(p));
+  };
+  const debouncedForceUpdate = debounce(() => {
+    sendToLocalStorage();
+    forceUpdate();
+  });
+
+  const sse = new EventSource("http://localhost:8080/events?stream=messages");
   const handleMessage = ({ data: dataStr }: { data: string }) => {
     if (dataStr === "hello") return;
 
@@ -129,6 +154,8 @@ async function main() {
     const binding = pane.addBinding(data, "value", params);
 
     function onChange(ev: { value: unknown }) {
+      tweakedParams[params.label!] = ev.value;
+      debouncedForceUpdate();
       ky.post("http://localhost:8080/set", {
         json: { name: data.name, value: ev.value, cType: data.cType },
       });
